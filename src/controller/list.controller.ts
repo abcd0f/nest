@@ -1,15 +1,23 @@
-import { Controller, Get, Ip, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { ListService } from '../services/list.service';
+import { CreateItemDto } from '../dto/list.dto';
 
 @Controller('list')
 export class ListController {
   constructor(private readonly ListService: ListService) {}
 
-  @Get(':id')
-  getHello(@Param('id') id: number, @Ip() ip: string): string {
-    console.log(id);
-    console.log(ip, '11111111');
+  @Post('create')
+  create(@Body() CreateItemDto: CreateItemDto) {
+    return this.ListService.createItem(CreateItemDto);
+  }
 
-    return this.ListService.getHello();
+  @Get()
+  getList() {
+    return this.ListService.getList();
+  }
+
+  @Get(':id')
+  getItem(@Param('id') id) {
+    return this.ListService.getItem(id);
   }
 }
