@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 @Injectable()
 export class ListService {
   async createItem(val: CreateItemDto) {
-    await prisma.list.create({
+    await prisma.userList.create({
       data: {
         title: val.title,
         content: val.content,
@@ -19,12 +19,12 @@ export class ListService {
     };
   }
   async getList() {
-    const list = await prisma.list.findMany();
+    const list = await prisma.userList.findMany();
     return list;
   }
 
   async getItem(id) {
-    const data = await prisma.list.findUnique({
+    const data = await prisma.userList.findUnique({
       where: {
         id: parseInt(id),
       },
