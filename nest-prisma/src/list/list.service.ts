@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 
@@ -8,7 +8,7 @@ import { PrismaService } from 'db/prisma.service';
 export class ListService {
   constructor(private prisma: PrismaService) {}
   async create(createListDto: CreateListDto) {
-    const data = await this.prisma.list.create({
+    await this.prisma.list.create({
       data: createListDto,
     });
 
@@ -18,19 +18,52 @@ export class ListService {
     };
   }
 
-  findAll() {
-    return `This action returns all list`;
+  async findAll() {
+    const data = await this.prisma.list.findMany();
+    return {
+      code: 200,
+      msg: '查询成功',
+      data,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} list`;
+  async findOne(id: number) {
+    const data = await this.prisma.list.findUnique({
+      where: {
+        id,
+      },
+    });
+    return {
+      code: 200,
+      msg: '查询成功',
+      data,
+    };
   }
 
-  update(id: number, updateListDto: UpdateListDto) {
-    return `This action updates a #${id} list`;
+  async update(id: number, updateListDto: UpdateListDto) {
+    const data = await this.prisma.list.update({
+      where: {
+        id,
+      },
+      data: updateListDto,
+    });
+
+    return {
+      code: 200,
+      msg: '更新成功',
+      data,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} list`;
+  async remove(id: number) {
+    await this.prisma.list.delete({
+      where: {
+        id,
+      },
+    });
+    return {
+      code: 200,
+      msg: '删除成功',
+    };
   }
 }
