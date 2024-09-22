@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 
@@ -11,59 +11,44 @@ export class ListService {
     await this.prisma.list.create({
       data: createListDto,
     });
-
-    return {
-      code: 200,
-      msg: '添加成功',
-    };
   }
 
   async findAll() {
     const data = await this.prisma.list.findMany();
-    return {
-      code: 200,
-      msg: '查询成功',
-      data,
-    };
+    return data;
   }
 
   async findOne(id: number) {
-    const data = await this.prisma.list.findUnique({
-      where: {
-        id,
-      },
-    });
-    return {
-      code: 200,
-      msg: '查询成功',
-      data,
-    };
+    const data = await this.prisma.list.findUnique({ where: { id } });
+
+    if (!data) throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+    return data;
   }
 
   async update(id: number, updateListDto: UpdateListDto) {
+    const exists = await this.prisma.list.findUnique({ where: { id } });
+    if (!exists)
+      throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+
     const data = await this.prisma.list.update({
-      where: {
-        id,
-      },
+      where: { id },
       data: updateListDto,
     });
 
-    return {
-      code: 200,
-      msg: '更新成功',
-      data,
-    };
+    if (!data)
+      throw new HttpException('修改失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    return data;
   }
 
   async remove(id: number) {
-    await this.prisma.list.delete({
-      where: {
-        id,
-      },
-    });
-    return {
-      code: 200,
-      msg: '删除成功',
-    };
+    const exists = await this.prisma.list.findUnique({ where: { id } });
+    if (!exists)
+      throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+
+    const data = await this.prisma.list.delete({ where: { id } });
+    if (!data)
+      throw new HttpException('删除失败', HttpStatus.INTERNAL_SERVER_ERROR);
+
+    return data;
   }
 }

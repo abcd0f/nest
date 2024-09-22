@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateListDto } from './dto/create-list.dto';
 import { UpdateListDto } from './dto/update-list.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,26 +12,33 @@ export class ListService {
 
   async create(createListDto: CreateListDto) {
     await this.listRepository.save(createListDto);
-    return { code: 200, msg: '新增成功' };
+    return;
   }
 
   async findAll() {
     const data = await this.listRepository.find();
-    return { code: 200, msg: '成功', data };
+    return data;
   }
 
   async findOne(id: number) {
     const data = await this.listRepository.findOne({ where: { id } });
-    return { code: 200, msg: '成功', data };
+    if (!data) throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+    return data;
   }
 
   async update(id: number, updateListDto: UpdateListDto) {
+    const data = await this.listRepository.findOne({ where: { id } });
+    if (!data) throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+
     await this.listRepository.update(id, updateListDto);
-    return { code: 200, msg: '更新成功' };
+    return;
   }
 
   async remove(id: number) {
+    const data = await this.listRepository.findOne({ where: { id } });
+    if (!data) throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+
     await this.listRepository.delete(id);
-    return { code: 200, msg: '删除成功' };
+    return;
   }
 }
