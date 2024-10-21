@@ -1,10 +1,10 @@
 // src/database/database.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import mysql from 'mysql2/promise';
+import * as mysql from 'mysql2/promise';
 import dbConfig from './database.config';
 
 @Injectable()
-export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+export class DbService implements OnModuleInit, OnModuleDestroy {
   private pool: mysql.Pool;
 
   async onModuleInit() {
