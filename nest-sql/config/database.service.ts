@@ -13,7 +13,7 @@ export class DbService implements OnModuleInit, OnModuleDestroy {
   }
 
   async query(sql: string, values?: any[]) {
-    let connection;
+    let connection:any;
     try {
       connection = await this.pool.getConnection();
       const [results] = await connection.execute(sql, values);
