@@ -22,6 +22,9 @@ export class ListService {
     const data = await this.prisma.list.findUnique({ where: { id } });
 
     if (!data) throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
+
+
+    
     return data;
   }
 
