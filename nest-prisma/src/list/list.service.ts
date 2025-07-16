@@ -23,8 +23,6 @@ export class ListService {
 
     if (!data) throw new HttpException('没有找到该数据', HttpStatus.NOT_FOUND);
 
-
-    
     return data;
   }
 
